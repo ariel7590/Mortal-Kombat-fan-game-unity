@@ -6,21 +6,25 @@ public class PlayerControl : MonoBehaviour
 {
     [SerializeField] float speed = 3.5f;
     [SerializeField] Animator animator;
+    private Rigidbody2D playerRB;
+    public float jumpForce;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        playerRB = GameObject.Find("Player").GetComponent<Rigidbody2D>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        Walk();
+        AvoidFromFalling();
+        Control();
     }
 
-    void Walk()
+    void Control()
     {
+        // Walk/Stop
         if (Input.GetKey(KeyCode.RightArrow))
         {
             animator.SetFloat("Speed_float", speed);
@@ -34,6 +38,20 @@ public class PlayerControl : MonoBehaviour
         else
         {
             animator.SetFloat("Speed_float", 0);
+        }
+
+        //Jump
+        if(Input.GetKey(KeyCode.UpArrow))
+        {
+            playerRB.AddForce(Vector2.up*jumpForce, ForceMode2D.Force);
+        }
+    }
+
+    void AvoidFromFalling()
+    {
+        if(transform.position.y<-3.27f)
+        {
+            transform.position = new Vector3(transform.position.x, -3.27f, transform.position.z);
         }
     }
 }
