@@ -7,7 +7,8 @@ public class PlayerControl : MonoBehaviour
     [SerializeField] float speed = 3.5f;
     [SerializeField] Animator animator;
     private Rigidbody2D playerRB;
-    public float jumpForce;
+    [SerializeField] float jumpForce=15;
+    private float groundHeight = -3.27f;
 
     // Start is called before the first frame update
     void Start()
@@ -32,7 +33,7 @@ public class PlayerControl : MonoBehaviour
         }
         else if (Input.GetKey(KeyCode.LeftArrow))
         {
-            animator.SetFloat("Speed_float", speed);
+            animator.SetFloat("Speed_float", -speed);
             transform.Translate(Vector3.left * Time.deltaTime * speed);
         }
         else
@@ -41,17 +42,38 @@ public class PlayerControl : MonoBehaviour
         }
 
         //Jump
-        if(Input.GetKey(KeyCode.UpArrow))
+        if(Input.GetKeyDown(KeyCode.UpArrow))
         {
-            playerRB.AddForce(Vector2.up*jumpForce, ForceMode2D.Force);
+            playerRB.AddForce(Vector2.up*jumpForce, ForceMode2D.Impulse);
+        }
+
+        if (transform.position.y > groundHeight) // Enters jump animation when character is in the air
+        {
+            animator.SetBool("Jump_bool", true);
+        }
+        else
+        {
+            animator.SetBool("Jump_bool", false);
         }
     }
 
     void AvoidFromFalling()
     {
-        if(transform.position.y<-3.27f)
+        if(transform.position.y<groundHeight)
         {
-            transform.position = new Vector3(transform.position.x, -3.27f, transform.position.z);
+            transform.position = new Vector3(transform.position.x, groundHeight, transform.position.z);
+            FixVelocity();
+        }
+    }
+
+    void FixVelocity()
+        /*
+         *The velocity is messed up, so this function fixing it
+         */
+    {
+        if (playerRB.velocity.y < 0)
+        {
+            playerRB.velocity = Vector2.zero;
         }
     }
 }
