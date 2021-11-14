@@ -77,6 +77,16 @@ public class PlayerControl : MonoBehaviour
                 animator.SetBool("Duck_bool", false);
             }
         }
+
+        //Punch up right hand
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            animator.SetBool("PunchUpRight_bool", true);
+        }
+        else
+        {
+            animator.SetBool("PunchUpRight_bool", false);
+        }    
     }
 
     void AvoidFromFalling()
